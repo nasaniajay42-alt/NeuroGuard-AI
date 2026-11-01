@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroGuard AI | AURA Security Dashboard</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0b1120;
+    color: #e5e7eb;
+}
+
+header {
+    padding: 22px 5%;
+    background: #111b2e;
+    border-bottom: 1px solid #26354d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 { color: #60a5fa; font-size: 25px; }
+header p { color: #94a3b8; font-size: 12px; margin-top: 5px; }
+
+.status {
+    color: #4ade80;
+    background: #123329;
+    padding: 9px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+main { padding: 30px 5%; }
+
+.section-title { margin-bottom: 18px; font-size: 20px; }
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #152238;
+    padding: 22px;
+    border: 1px solid #263b58;
+    border-radius: 12px;
+}
+
+.card p { color: #94a3b8; font-size: 13px; }
+.card h2 { font-size: 28px; margin-top: 13px; }
+.blue { color: #60a5fa; }
+.red { color: #f87171; }
+.green { color: #4ade80; }
+.yellow { color: #fbbf24; }
+
+.panel {
+    background: #152238;
+    padding: 25px;
+    border: 1px solid #263b58;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.upload-area {
+    border: 2px dashed #45617f;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+}
+
+input[type=file] {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+}
+
+button {
+    background: #2563eb;
+    border: none;
+    padding: 12px 22px;
+    color: white;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover { background: #1d4ed8; }
+button:disabled { opacity: .5; cursor: wait; }
+
+#message { margin-top: 15px; color: #fbbf24; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 13px;
+}
+
+th, td {
+    padding: 13px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+th { color: #93c5fd; }
+.low { color: #4ade80; }
+.high { color: #f87171; }
+
+.download {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: white;
+    background: #15803d;
+    padding: 11px 17px;
+    border-radius: 7px;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    padding: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>NEUROGUARD AI</h1>
+        <p>AURA — Adaptive Unknown-threat Recognition Architecture</p>
+    </div>
+    <div class="status" id="connection">Checking API...</div>
+</header>
+
+<main>
+
+    <h2 class="section-title">Security Overview</h2>
+
+    <section class="cards">
+        <div class="card">
+            <p>Total Records Analyzed</p>
+            <h2 class="blue" id="total">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Suspicious Records</p>
+            <h2 class="red" id="suspicious">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Benign Records</p>
+            <h2 class="green" id="benign">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Suspicious Traffic</p>
+            <h2 class="yellow" id="percentage">0%</h2>
+        </div>
+    </section>
+
+<section class="panel">
+    <h2 class="section-title">Network Traffic Analytics</h2>
+
+    <div class="cards">
+        <div class="card">
+            <p>Benign Traffic</p>
+            <h2 class="green" id="benignPercent">0%</h2>
+            <div style="background:#334155;height:10px;border-radius:10px;margin-top:15px">
+                <div id="benignBar" style="background:#4ade80;width:0%;height:10px;border-radius:10px"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <p>Suspicious Traffic</p>
+            <h2 class="red" id="suspiciousPercent">0%</h2>
+            <div style="background:#334155;height:10px;border-radius:10px;margin-top:15px">
+                <div id="suspiciousBar" style="background:#f87171;width:0%;height:10px;border-radius:10px"></div>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="margin:15px 0">Traffic Distribution</h3>
+    <div style="height:24px;background:#334155;border-radius:12px;overflow:hidden;display:flex">
+        <div id="benignChart" style="width:0%;background:#4ade80"></div>
+        <div id="suspiciousChart" style="width:0%;background:#f87171"></div>
+    </div>
+
+    <p style="color:#94a3b8;margin-top:12px;font-size:13px">
+        Green: Benign traffic | Red: Suspicious traffic
+    </p>
+</section>
+
+    <section class="panel">
+        <h2 class="section-title">AURA Prediction Engine</h2>
+        <p>Upload a network traffic CSV dataset to analyze suspicious activity.</p>
+
+        <div class="upload-area">
+            <p>Select your CIC-IDS2017 cleaned CSV dataset</p>
+            <input type="file" id="csvFile" accept=".csv">
+            <button id="analyzeBtn" onclick="analyzeFile()">Analyze Network Traffic</button>
+            <p id="message">Waiting for dataset...</p>
+        </div>
+    </section>
+
+    <section class="cards">
+        <div class="card">
+            <p>XGBoost Model</p>
+            <h2 class="green" id="xgbStatus">Waiting</h2>
+        </div>
+        <div class="card">
+            <p>Random Forest Model</p>
+            <h2 class="green" id="rfStatus">Waiting</h2>
+        </div>
+        <div class="card">
+            <p>AURA Fusion</p>
+            <h2 class="blue" id="auraStatus">Ready</h2>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2 class="section-title">Prediction Results</h2>
+        <p>Sample of the latest analyzed network records.</p>
+
+        <div style="overflow-x:auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Actual Label</th>
+                        <th>XGBoost</th>
+                        <th>Random Forest</th>
+                        <th>AURA Result</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                    <tr><td colspan="5">No predictions available yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a class="download" href="http://127.0.0.1:8000/download-results">
+            Download Prediction Report
+        </a>
+    </section>
+
+</main>
+
+<footer>
+    NeuroGuard AI | AURA Adaptive Network Threat Detection | Prototype v1.0
+</footer>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+async function checkAPI() {
+    try {
+        const response = await fetch(API + "/health");
+        if (!response.ok) throw new Error("API unavailable");
+        const data = await response.json();
+
+        document.getElementById("connection").textContent =
+            data.status === "healthy" ? "● API Connected" : "API Status Unknown";
+    } catch (error) {
+        document.getElementById("connection").textContent = "● API Offline";
+    }
+}
+
+function formatNumber(number) {
+    return Number(number || 0).toLocaleString("en-IN");
+}
+
+async function analyzeFile() {
+    const fileInput = document.getElementById("csvFile");
+    const button = document.getElementById("analyzeBtn");
+    const message = document.getElementById("message");
+
+    if (!fileInput.files.length) {
+        message.textContent = "Please select a CSV file first.";
+        return;
+    }
+
+    const file = fileInput.files[0];
+
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+        message.textContent = "Please upload a CSV file.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    button.disabled = true;
+    message.textContent = "Analyzing network traffic. Please wait...";
+
+    try {
+        const response = await fetch(API + "/predict", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Prediction failed");
+        }
+
+        document.getElementById("total").textContent =
+            formatNumber(data.total_records);
+
+        document.getElementById("suspicious").textContent =
+            formatNumber(data.suspicious_records);
+
+        document.getElementById("benign").textContent =
+            formatNumber(data.benign_records);
+
+        document.getElementById("percentage").textContent =
+            data.suspicious_percentage + "%";
+
+const benignPct = (data.benign_records / data.total_records) * 100;
+const suspiciousPct = (data.suspicious_records / data.total_records) * 100;
+
+document.getElementById("benignPercent").textContent =
+    benignPct.toFixed(2) + "%";
+
+document.getElementById("suspiciousPercent").textContent =
+    suspiciousPct.toFixed(2) + "%";
+
+document.getElementById("benignBar").style.width =
+    benignPct + "%";
+
+document.getElementById("suspiciousBar").style.width =
+    suspiciousPct + "%";
+
+document.getElementById("benignChart").style.width =
+    benignPct + "%";
+
+document.getElementById("suspiciousChart").style.width =
+    suspiciousPct + "%";
+
+        document.getElementById("xgbStatus").textContent =
+            data.models.xgboost;
+
+        document.getElementById("rfStatus").textContent =
+            data.models.random_forest;
+
+        document.getElementById("auraStatus").textContent =
+            data.status === "success" ? "Active" : "Error";
+
+        const results = document.getElementById("results");
+        results.innerHTML = "";
+
+        data.sample_results.forEach(item => {
+            const row = document.createElement("tr");
+
+            const values = [
+                item.Actual_Label || "Not provided",
+                item.XGB_Prediction ? "Suspicious" : "Benign",
+                item.RF_Prediction ? "Suspicious" : "Benign",
+                item.Classification,
+                item.Risk_Level
+            ];
+
+            values.forEach((value, index) => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+
+                if (index === 4) {
+                    cell.className =
+                        value === "LOW" ? "low" : "high";
+                }
+
+                row.appendChild(cell);
+            });
+
+            results.appendChild(row);
+        });
+
+        message.textContent =
+            "Analysis completed successfully! " +
+            formatNumber(data.total_records) + " records processed.";
+
+        checkAPI();
+
+    } catch (error) {
+        message.textContent = "Error: " + error.message;
+    } finally {
+        button.disabled = false;
+    }
+}
+
+checkAPI();
+</script>
+
+</body>
+</html>

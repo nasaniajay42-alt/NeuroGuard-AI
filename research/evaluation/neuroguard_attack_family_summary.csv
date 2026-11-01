@@ -1,0 +1,10 @@
+Attack,Total,XGB_Detected,RF_Detected,AURA_Detected,AURA_Recall,Dataset,Detected,Missed,Detection_Rate
+DoS GoldenEye,10286,0.0,7971.0,7971.0,0.7749368073109081,,,,
+DoS Hulk,172849,628.0,168215.0,168215.0,0.9731904726090402,,,,
+DoS Slowhttptest,5228,7.0,2128.0,2128.0,0.4070390206579954,,,,
+DoS slowloris,5385,0.0,3246.0,3246.0,0.6027855153203343,,,,
+Heartbleed,11,0.0,11.0,11.0,1.0,,,,
+Web Attack � Brute Force,1470,,,,,WebAttacks,34.0,1436.0,0.02312925170068027
+Web Attack � Sql Injection,21,,,,,WebAttacks,6.0,15.0,0.2857142857142857
+Web Attack � XSS,652,,,,,WebAttacks,0.0,652.0,0.0
+Infiltration,36,,,,,Infiltration,3.0,33.0,0.08333333333333333

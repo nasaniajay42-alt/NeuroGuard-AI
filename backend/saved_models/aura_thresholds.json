@@ -1,0 +1,9 @@
+
+{
+    "architecture": "AURA_XGBoost_RandomForest_OR",
+    "xgboost_threshold": 0.30,
+    "random_forest_threshold": 0.018,
+    "fusion_method": "OR",
+    "calibration_dataset": "CIC-IDS2017 Wednesday",
+    "status": "Candidate - frozen for next evaluation"
+}

@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+.gitignore~
+backend/datasets/cleaned_tuesday_dataset.csv
+backend/datasets/cleaned_wednesday_dataset.csv
+backend/datasets/Tuesday-WorkingHours.pcap_ISCX.csv
+backend/datasets/Wednesday-workingHours.pcap_ISCX.csv
+research/experiments/aura_error_analysis.csv

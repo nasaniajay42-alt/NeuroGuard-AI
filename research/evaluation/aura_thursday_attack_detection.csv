@@ -1,0 +1,5 @@
+Dataset,Attack,Total,Detected,Missed,Detection_Rate
+WebAttacks,Web Attack � Brute Force,1470,34,1436,0.02312925170068027
+WebAttacks,Web Attack � Sql Injection,21,6,15,0.2857142857142857
+WebAttacks,Web Attack � XSS,652,0,652,0.0
+Infiltration,Infiltration,36,3,33,0.08333333333333333
